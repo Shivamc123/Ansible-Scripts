@@ -1,32 +1,9 @@
-import sys
-import boto3
-from botocore.exceptions import ClientError
-
-instance_id = sys.argv[2]
-action = sys.argv[1].upper()
-
-ec2 = boto3.client('ec2')
-
-
-if action == 'ON':
-    try:
-        ec2.start_instances(InstanceIds=[i-12345678], DryRun=True)
-    except ClientError as e:
-        if 'DryRunOperation' not in str(e):
-            raise
-    try:
-        response = ec2.start_instances(InstanceIds=[i-12345678], DryRun=False)
-        print(response)
-    except ClientError as e:
-        print(e)
-else:
-    try:
-        ec2.stop_instances(InstanceIds=[i-12345678], DryRun=True)
-    except ClientError as e:
-        if 'DryRunOperation' not in str(e):
-            raise
-    try:
-        response = ec2.stop_instances(InstanceIds=[i-12345678], DryRun=False)
-        print(response)
-    except ClientError as e:
-        print(e)
+#/usr/bin/python
+import boto.ec2
+conn = boto.ec2.connect_to_region(“us-east-1”)
+conn.run_instances(
+    ‘ami-6ac2a85a’,
+    key_name=‘shivam-instance’,
+    instance_type=‘t2.micro’,
+    security_groups=[‘shivam-ssh’]
+)
